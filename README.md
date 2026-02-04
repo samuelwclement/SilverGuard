@@ -9,6 +9,8 @@ A program for seniors to be alerted of malicious material currently on their scr
   * Click Load unpacked.
   * Select the scam-sniffer folder you just cloned.
 
+You WILL need a Google Gemini API key to use the extension. [You can get one here.](https://aistudio.google.com/api-keys)
+
 
 
 # License
