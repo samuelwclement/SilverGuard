@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "ScamSniffer - AI Security Analyst",
+  "version": "1.0",
+  "description": "Takes a screenshot of the current tab and uses Gemini to check for scams.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
