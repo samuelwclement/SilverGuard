@@ -1,7 +1,7 @@
 // 🛠️ DEVELOPER SETTINGS
 // Paste your key inside the quotes below to skip the login screen.
 // (Example: "AIzaSyD...")
-const TEST_API_KEY = "AIzaSyCrbVuNcraUdpF91G4O4vReAEmu_0O8kjU"; 
+const TEST_API_KEY = "AIzaSyCQ0wczfnJmWuq-3VMWY7e1wI2CLDyxfbY"; 
 
 document.addEventListener('DOMContentLoaded', () => {
   const apiKeyInput = document.getElementById('apiKeyInput');

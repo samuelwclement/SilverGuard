@@ -1,35 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h2>🕵️ ScamSniffer</h2>
-    
-    <div id="setup-view">
-      <p>Enter your Gemini API Key:</p>
-      <input type="password" id="apiKeyInput" placeholder="Paste API Key here">
-      <button id="saveKeyBtn">Save Key</button>
+  <div class="header">
+    <div class="header-left">
+      <svg class="icon-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+      <div class="header-text">
+        <h1>SilverGuard</h1>
+        <h2>Scam Protection</h2>
+      </div>
+    </div>
+    <button id="changeKeyBtn" class="icon-btn" title="Settings">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div id="setup-view" class="container hidden">
+    <div class="input-group">
+      <label for="apiKeyInput">Enter Gemini API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy...">
+    </div>
+    <button id="saveKeyBtn" class="primary-btn">Save Key</button>
+  </div>
+
+  <div id="main-view" class="container">
+    <button id="scanBtn" class="primary-btn scan-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+        <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+        <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+        <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+      </svg>
+      Scan Current Page
+    </button>
+
+    <div class="info-box">
+      <strong>Quick Tip:</strong> Use "Scan Current Page" to instantly check the website you're viewing right now!
     </div>
 
-    <div id="main-view" class="hidden">
-      <button id="scanBtn" class="primary-btn">📸 Scan Page for Scams</button>
-      
-      <div id="loading" class="hidden">
-        <div class="spinner"></div>
-        <p>Analyzing pixels...</p>
-      </div>
-
-      <div id="result" class="hidden">
-        <h3>Analysis Result:</h3>
-        <div id="risk-level"></div>
-        <p id="analysis-text"></p>
-      </div>
-      
-      <button id="changeKeyBtn" class="text-btn">Change API Key</button>
+    <div id="loading" class="state-box hidden">
+      Analyzing pixels...
+    </div>
+    
+    <div id="result" class="state-box hidden">
+      <div id="risk-level"></div>
+      <p id="analysis-text"></p>
     </div>
   </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
