@@ -21,7 +21,11 @@
   
   "permissions": [
     "activeTab",
-    "scripting"
-  ]
+    "scripting",
+    "identity"
+  ],
+  "oauth2": {
+    "client_id": "496926480665-00l667aib7v8mpe2pr99gipciupa55pd.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/userinfo.email"]
+  }
 }
-
