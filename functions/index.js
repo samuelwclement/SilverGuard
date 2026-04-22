@@ -45,6 +45,9 @@ exports.analyzeScreen = onRequest(
           });
         }
 
+        // Ensure the Base64 string is perfectly clean (strip the data URI prefix if the frontend sent it)
+        const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
+
         const promptText = `
           You are a cyber security expert.
           The user is visiting: ${pageUrl}
@@ -80,7 +83,7 @@ exports.analyzeScreen = onRequest(
             contents: [{
               parts: [
                 {text: promptText},
-                {inline_data: {mime_type: "image/png", data: base64Image}},
+                {inlineData: {mimeType: "image/png", data: cleanBase64}}
               ],
             }],
           }),
@@ -89,10 +92,17 @@ exports.analyzeScreen = onRequest(
         const data = await geminiResponse.json();
 
         if (!geminiResponse.ok) {
-          console.error("Gemini API Error:", data);
+          if (geminiResponse.status === 429) {
+            console.error("🚨 RATE LIMIT EXCEEDED (429) 🚨");
+            // Log headers to catch hidden quota limits or Retry-After metrics
+            console.error("Response Headers:", Object.fromEntries(geminiResponse.headers.entries()));
+          }
+          
+          console.error(`Gemini API Error (${geminiResponse.status}):`, JSON.stringify(data, null, 2));
           return res.status(geminiResponse.status).json(data);
         }
 
+        console.log("✅ Successfully analyzed image and sent response.");
         res.status(200).json(data);
       } catch (error) {
         console.error("Backend Error:", error);
