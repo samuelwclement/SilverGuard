@@ -17,7 +17,7 @@ Follow these steps to get the backend running and the Chrome extension working o
 First, clone the repository and install the dependencies required for the Firebase Cloud Functions.
 
 ```bash
-git clone [https://github.com/YOUR-USERNAME/SilverGuard.git](https://github.com/YOUR-USERNAME/SilverGuard.git)
+git clone [https://github.com/samuelwclement/SilverGuard.git](https://github.com/samuelwclement/SilverGuard.git)
 cd SilverGuard/functions
 npm install
 ```
