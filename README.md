@@ -1,7 +1,9 @@
 # SilverGuard
 A Chrome Web Extension for seniors to be alerted of malicious material currently on their screen. 
 
-## [Presentation Deck](https://docs.google.com/presentation/d/1WBMVNXMqrmqZranvj3wJPdzqXRyLp7NvXU-66vyHNnM/edit?usp=sharing )
+[Presentation Deck](https://docs.google.com/presentation/d/1WBMVNXMqrmqZranvj3wJPdzqXRyLp7NvXU-66vyHNnM/edit?usp=sharing )
+
+
 
 
 # Getting Started & Development Setup
