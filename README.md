@@ -1,6 +1,9 @@
 # SilverGuard
 A Chrome Web Extension for seniors to be alerted of malicious material currently on their screen. 
 
+## [Presentation Deck](https://docs.google.com/presentation/d/1WBMVNXMqrmqZranvj3wJPdzqXRyLp7NvXU-66vyHNnM/edit?usp=sharing )
+
+
 # Getting Started & Development Setup
 
 Because SilverGuard requires a backend database to store scan statistics and a cloud function to securely process Gemini API requests, you will need to set up your own Firebase environment to run this project locally.
