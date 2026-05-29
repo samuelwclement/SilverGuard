@@ -1,41 +1,41 @@
-// 🛠️ DEVELOPER SETTINGS
-// Paste your key inside the quotes below to skip the login screen.
-// (Example: "AIzaSyD...")
-const TEST_API_KEY = "AIzaSyCQ0wczfnJmWuq-3VMWY7e1wI2CLDyxfbY"; 
-
 document.addEventListener('DOMContentLoaded', () => {
-  const apiKeyInput = document.getElementById('apiKeyInput');
-  const saveKeyBtn = document.getElementById('saveKeyBtn');
+  const signInBtn = document.getElementById('saveKeyBtn'); // Repurposed for Sign In
   const scanBtn = document.getElementById('scanBtn');
-  const changeKeyBtn = document.getElementById('changeKeyBtn');
+  const signOutBtn = document.getElementById('changeKeyBtn'); // Repurposed for Sign Out
   
-  // 1. Check for Hardcoded Key first (for fast testing)
-  if (TEST_API_KEY && TEST_API_KEY.length > 10) {
-    console.log("🛠️ Using Hardcoded Dev Key");
-    localStorage.setItem('geminiApiKey', TEST_API_KEY);
-  }
-
-  // 2. Check for saved API key
-  const savedKey = localStorage.getItem('geminiApiKey');
-  if (savedKey) {
-    showMainView();
-  } else {
-    console.log("ℹ️ No API Key found. Waiting for user input.");
-  }
-
-  saveKeyBtn.addEventListener('click', () => {
-    const key = apiKeyInput.value.trim();
-    if (key) {
-      localStorage.setItem('geminiApiKey', key);
+  // 1. Check if user is already signed in (silent authentication)
+  chrome.identity.getAuthToken({ interactive: false }, (token) => {
+    if (chrome.runtime.lastError || !token) {
+      console.log("ℹ️ User not signed in. Waiting for user to click Sign In.");
+      showSetupView();
+    } else {
       showMainView();
     }
   });
 
-  changeKeyBtn.addEventListener('click', () => {
-    localStorage.removeItem('geminiApiKey');
-    document.getElementById('setup-view').classList.remove('hidden');
-    document.getElementById('main-view').classList.add('hidden');
-    console.log("🔄 Key reset by user.");
+  // 2. Handle Sign In
+  signInBtn.addEventListener('click', () => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      if (chrome.runtime.lastError) {
+        console.error("❌ Sign in failed:", chrome.runtime.lastError.message);
+        return;
+      }
+      console.log("✅ Signed in successfully!");
+      showMainView();
+    });
+  });
+
+  // 3. Handle Sign Out
+  signOutBtn.addEventListener('click', () => {
+    chrome.identity.getAuthToken({ interactive: false }, (token) => {
+      if (token) {
+        chrome.identity.removeCachedAuthToken({ token: token }, () => {
+          console.log("🔄 Signed out by user.");
+          document.getElementById('setup-view').classList.remove('hidden');
+          document.getElementById('main-view').classList.add('hidden');
+        });
+      }
+    });
   });
 
   scanBtn.addEventListener('click', async () => {
@@ -73,6 +73,11 @@ function showMainView() {
   document.getElementById('main-view').classList.remove('hidden');
 }
 
+function showSetupView() {
+  document.getElementById('setup-view').classList.remove('hidden');
+  document.getElementById('main-view').classList.add('hidden');
+}
+
 function captureScreen() {
   return new Promise((resolve, reject) => {
     chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
@@ -86,45 +91,36 @@ function captureScreen() {
 }
 
 async function analyzeImageWithGemini(base64Image) {
-  const apiKey = localStorage.getItem('geminiApiKey');
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const pageUrl = tab.url;
 
-  // 🔍 DEBUGGING: Log the model URL being used
+  // Grab the user's Google Auth token before making the request
+  const userToken = await new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: false }, (token) => {
+      if (chrome.runtime.lastError || !token) {
+        reject(new Error("Authentication failed. Please sign in again."));
+      } else {
+        resolve(token);
+      }
+    });
+  });
 
-// Using the "Lite" model from your available list - perfect for Tier 1 keys
-const modelVersion = "gemini-2.0-flash-lite";
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelVersion}:generateContent?key=${apiKey}`;
+  // 📡 Connecting to your secure Firebase Backend
+  const backendUrl = "https://analyzescreen-n3up3kbwva-uc.a.run.app";
   
-  console.log(`📡 Connecting to Model: ${modelVersion}`);
-  console.log(`🔗 Target URL: ${url.replace(apiKey, "HIDDEN_KEY")}`); // Log URL without leaking key
-
-  const promptText = `
-    You are a cyber security expert. 
-    The user is visiting: ${pageUrl}
-    
-    Analyze this screenshot. 
-    Look for: Fake logos, urgency tactics, bad grammar, URL mismatches.
-    
-    Return JSON:
-    {
-      "riskLevel": "Safe", "Suspicious", or "High Risk",
-      "reasoning": "Concise explanation for a senior citizen."
-    }
-  `;
+  console.log(`📡 Sending screenshot to secure backend...`);
 
   const requestBody = {
-    contents: [{
-      parts: [
-        { text: promptText },
-        { inline_data: { mime_type: "image/png", data: base64Image } }
-      ]
-    }]
+    base64Image: base64Image,
+    pageUrl: pageUrl
   };
 
-  const response = await fetch(url, {
+  const response = await fetch(backendUrl, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${userToken}`
+    },
     body: JSON.stringify(requestBody)
   });
 
